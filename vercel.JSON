@@ -1,0 +1,7 @@
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/DT.html" }],
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "devCommand": null,
+  "framework": null
+}
