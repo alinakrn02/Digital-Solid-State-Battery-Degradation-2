@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Twin SSB - Selat Bali Real-time</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="DT.css" />
+  </head>
+  <body
+    class="bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 min-h-screen text-white"
+  >
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header -->
+      <header class="text-center mb-12">
+        <h1
+          class="text-5xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent mb-4"
+        >
+          Digital Twin Solid State Battery Degradation
+        </h1>
+        <p class="text-xl text-blue-200">
+          Real time Monitoring Selat Bali Offshore Wind Farm
+        </p>
+        <div class="mt-4 flex justify-center space-x-4 text-sm">
+          <span id="status" class="px-3 py-1 bg-green-500 rounded-full"
+            >🟢 LIVE</span
+          >
+          <span id="currentSoH" class="font-bold">SoH: 100%</span>
+          <span id="currentCycle">Cycle: 0</span>
+        </div>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Real-time Controls -->
+        <div
+          class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20"
+        >
+          <h2 class="text-2xl font-bold mb-6 flex items-center">
+            <span
+              class="w-2 h-2 bg-green-400 rounded-full mr-3 animate-pulse"
+            ></span>
+            Kontrol Real time
+          </h2>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-2"
+                >Temperature (°C)</label
+              >
+              <input
+                type="range"
+                id="tempSlider"
+                min="28"
+                max="40"
+                value="32"
+                class="w-full h-2 bg-white/30 rounded-lg appearance-none cursor-pointer"
+              />
+              <span id="tempValue" class="ml-2">32°C</span>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2"
+                >Salt Concentration (ppm)</label
+              >
+              <input
+                type="range"
+                id="saltSlider"
+                min="800"
+                max="2000"
+                value="1350"
+                class="w-full h-2 bg-white/30 rounded-lg appearance-none cursor-pointer"
+              />
+              <span id="saltValue" class="ml-2">1350 ppm</span>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">DoD (%)</label>
+              <input
+                type="range"
+                id="dodSlider"
+                min="30"
+                max="85"
+                value="75"
+                class="w-full h-2 bg-white/30 rounded-lg appearance-none cursor-pointer"
+              />
+              <span id="dodValue" class="ml-2">75%</span>
+            </div>
+            <button
+              id="simulateBtn"
+              class="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 px-6 py-3 rounded-xl font-bold text-lg mt-6 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1"
+            >
+              🚀 Start Real time Simulation
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Data Metrics -->
+        <div
+          class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20"
+        >
+          <h2 class="text-2xl font-bold mb-6">📊 Live Metrics</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+            <div
+              class="p-4 bg-gradient-to-br from-red-500/30 to-orange-500/30 rounded-xl"
+            >
+              <div class="text-2xl font-bold text-red-400" id="degradationRate">
+                0.00%
+              </div>
+              <div class="text-sm opacity-75">Degradation Rate</div>
+            </div>
+            <div
+              class="p-4 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-xl"
+            >
+              <div
+                class="text-2xl font-bold text-blue-400"
+                id="internalResistance"
+              >
+                50 mΩ
+              </div>
+              <div class="text-sm opacity-75">Internal Resistance</div>
+            </div>
+            <div
+              class="p-4 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-xl"
+            >
+              <div
+                class="text-2xl font-bold text-purple-400"
+                id="voltageVariance"
+              >
+                0.05V
+              </div>
+              <div class="text-sm opacity-75">Voltage Variance</div>
+            </div>
+            <div
+              class="p-4 bg-gradient-to-br from-yellow-500/30 to-orange-400/30 rounded-xl md:col-span-2"
+            >
+              <div class="text-xl font-bold text-yellow-400" id="projection">
+                3 Years Projection: 100%
+              </div>
+              <div class="text-xs opacity-75 mt-1">Estimated Final SoH</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
+        <div
+          class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20"
+        >
+          <h3 class="text-xl font-bold mb-6">📈 SoH Trend Real-time</h3>
+          <canvas id="sohChart"></canvas>
+        </div>
+        <div
+          class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20"
+        >
+          <h3 class="text-xl font-bold mb-6">🌡️ Environmental Factors</h3>
+          <canvas id="envChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
+        <div
+          class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20"
+        >
+          <h3 class="text-xl font-bold mb-6">📈 SoH Trend Real-time</h3>
+          <canvas id="sohChart" class="h-80"></canvas>
+        </div>
+        <div
+          class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20"
+        >
+          <h3 class="text-xl font-bold mb-6">🌡️ Environmental Factors</h3>
+          <canvas id="envChart" class="h-80"></canvas>
+        </div>
+      </div>
+    </div>
+    <!-- Akhiri container di sini -->
+
+    <script src="DT.js"></script>
+  </body>
+</html>
